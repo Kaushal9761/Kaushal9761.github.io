@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Prediction Tool</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+    h2 { color: #333; }
+    input, button { padding: 10px; font-size: 16px; margin-top: 10px; }
+    #result { margin-top: 20px; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h2>🌟 Color Prediction Tool (Mobile Friendly)</h2>
+  <p>पिछली कलर हिस्ट्री डालें (जैसे: R,G,G,R,V,...)</p>
+  <input type="text" id="historyInput" placeholder="R,G,G,R,V" style="width:100%">
+  <button onclick="predictColor()">Predict Next Color</button>
+
+  <div id="result"></div>
+
+  <script>
+    function predictColor() {
+      const input = document.getElementById("historyInput").value.trim().toUpperCase();
+      if (!input) return;
+
+      const colors = input.split(",").filter(c => ['R', 'G', 'V'].includes(c));
+      const total = colors.length;
+      if (total === 0) {
+        document.getElementById("result").innerText = "❌ कृपया सही इनपुट डालें (R,G,V)";
+        return;
+      }
+
+      const red = colors.filter(c => c === 'R').length;
+      const green = colors.filter(c => c === 'G').length;
+      const violet = colors.filter(c => c === 'V').length;
+
+      const redProb = red / total;
+      const greenProb = green / total;
+      const violetProb = violet / total;
+
+      let suggested = "";
+      let confidence = 0;
+
+      if (redProb > greenProb && redProb > violetProb) {
+        suggested = "🔴 Red";
+        confidence = redProb;
+      } else if (greenProb > redProb && greenProb > violetProb) {
+        suggested = "🟢 Green";
+        confidence = greenProb;
+      } else {
+        suggested = "🟪 Violet";
+        confidence = violetProb;
+      }
+
+      document.getElementById("result").innerHTML =
+        `<b>Suggested Next Color:</b> ${suggested} <br> 
+         <b>Confidence:</b> ${(confidence * 100).toFixed(2)}%`
+    }
+  </script>
+</body>
+</html>
